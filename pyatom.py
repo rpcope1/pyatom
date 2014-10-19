@@ -148,6 +148,8 @@ class AtomFeed(object):
             self.generator = self.default_generator
         self.links = kwargs.get('links', [])
         self.entries = entries and list(entries) or []
+        #No need to fill in feed string again if nothing changed.
+        self._last_feed_string = None
 
         if not hasattr(self.author, '__iter__') \
            or isinstance(self.author, (basestring, dict)):
@@ -239,15 +241,21 @@ class AtomFeed(object):
                 yield u'  ' + line
         yield u'</feed>\n'
 
-    def to_string(self):
+    def to_string(self, encoding=None):
         """Convert the feed into a string."""
-        return u''.join(self.generate())
+        feed_string = u''.join(self.generate())
+        self._last_feed_string = feed_string if not encoding else feed_string.encode(encoding)
+        return self._last_feed_string
+
+    @property
+    def last_feed_str(self):
+        return self._last_feed_string
 
     def __unicode__(self):
         return self.to_string()
 
     def __str__(self):
-        return self.to_string().encode('utf-8')
+        return self.to_string('utf-8')
 
 
 class FeedEntry(object):
