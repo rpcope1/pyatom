@@ -242,13 +242,20 @@ class AtomFeed(object):
         yield u'</feed>\n'
 
     def to_string(self, encoding=None):
-        """Convert the feed into a string."""
+        """
+            Convert the feed into a string.
+            :param encoding: The desired encoding for the return string.
+            :returns: The Atom feed as a string.
+        """
         feed_string = u''.join(self.generate())
         self._last_feed_string = feed_string if not encoding else feed_string.encode(encoding)
         return self._last_feed_string
 
     @property
     def last_feed_str(self):
+        """
+            :returns: The results of the last call to to_string().
+        """
         return self._last_feed_string
 
     def __unicode__(self):
