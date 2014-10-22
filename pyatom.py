@@ -32,8 +32,11 @@ import sys
 
 from datetime import datetime
 
-if sys.version_info[0] == 3:
+if sys.version_info.major >= 3:
     basestring = str
+
+#Patch for issue #8 for Python 3 compatibility
+_unicode = str if sys.version_info.major >= 3 else unicode
 
 
 XHTML_NAMESPACE = 'http://www.w3.org/1999/xhtml'
@@ -54,7 +57,7 @@ def escape(s, quote=False):
     elif hasattr(s, '__html__'):
         return s.__html__()
     elif not isinstance(s, basestring):
-        s = unicode(s)
+        s = _unicode(s)
     s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
     if quote:
         s = s.replace('"', "&quot;")
